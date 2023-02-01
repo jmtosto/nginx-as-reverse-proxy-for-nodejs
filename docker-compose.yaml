@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  node-app:
+    container_name: node-app
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./node:/usr/src/app
+    networks: 
+      - app-net
+    tty: true
+  mysql-db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: mysql-db
+    restart: always
+    tty: true
+    volumes:
+      - ./db-storage:/var/lib/mysql
+    environment: 
+      - MYSQL_DATABASE=mysql-db
+      - MYSQL_ROOT_PASSWORD=node-app
+    networks: 
+      - app-net
+networks: 
+  app-net:
+    driver: bridge
