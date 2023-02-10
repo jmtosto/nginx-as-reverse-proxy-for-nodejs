@@ -4,13 +4,17 @@ services:
   node-app:
     container_name: node-app
     build: .
+    entrypoint: dockerize -wait tcp://mysql-db:3306 -timeout 40s node app.js
     ports:
       - "8080:8080"
     volumes:
-      - ./node:/usr/src/app
+      - .:/usr/src/app
     networks: 
       - app-net
     tty: true
+    depends_on:
+      - mysql-db
+
   mysql-db:
     image: mysql:5.7
     command: --innodb-use-native-aio=0
